@@ -23,6 +23,8 @@ public class MyService extends Service implements TextToSpeech.OnInitListener {
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d("MyLog", "Service started successfully!");
         savedNumber = intent.getStringExtra("savedNumber");
+        if (isNumber(savedNumber))
+            savedNumber = savedNumber.replace("", "-").trim();
         mtts = new TextToSpeech(getApplicationContext(), this);
         return super.onStartCommand(intent, flags, startId);
     }
@@ -54,5 +56,16 @@ public class MyService extends Service implements TextToSpeech.OnInitListener {
     private void speakOut() {
         Log.d("MyLog", "speakOut! savedNumber = " + savedNumber);
         mtts.speak(savedNumber, TextToSpeech.QUEUE_FLUSH, null);
+    }
+
+    private boolean isNumber(String word) {
+        boolean isNumber = false;
+        try {
+            Integer.parseInt(word);
+            isNumber = true;
+        } catch (NumberFormatException e) {
+            isNumber = false;
+        }
+        return isNumber;
     }
 }
